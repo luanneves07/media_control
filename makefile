@@ -1,24 +1,24 @@
 #Name
-PROJECT_NAME=media
+PROJECT_NAME=media_control
 
 # All source files
-SOURCE=$(wildcard ./source/*.c)
+SOURCE=$(wildcard ./src/*.c)
 
 # all header files
-HEADERS=$(wildcard ./source/*.h)
+HEADERS=$(wildcard ./src/*.h)
 
 # All Object files
-OBJ=$(subst .c,.o,$(subst source,objects,$(C_SOURCE)))
+OBJECTS=$(subst .c,.o,$(subst source,objects,$(SOURCE)))
 
 # Compiler
 CC=gcc
 
 # Compiler flags
-CC_FLAGS=	-c \
-					-W \
-					-Wall \
-					-ansi \
-					-pedantic
+CC_FLAGS=-c \
+ -W \
+ -Wall \
+ -ansi \
+ -pedantic 
 
 # Clean command
 RM = rm -rf
@@ -26,7 +26,7 @@ RM = rm -rf
 #
 #	Compilation
 #
-all: objFolder $(PROJ_NAME)
+all: objFolder $(PROJECT_NAME)
 
 $(PROJECT_NAME): $(OBJECTS)
 	@ echo 'Building binary using $(CC) linker: $@'
@@ -34,12 +34,12 @@ $(PROJECT_NAME): $(OBJECTS)
 	@ echo 'Finished building binary: $@'
 	@ echo ' '
 
-./objects/%.o: ./source/%.c ./source/%.h
+./objects/%.o: ./src/%.c ./src/%.h
 	@ echo 'Building target using $(CC) compiler: $<'
 	$(CC) $< $(CC_FLAGS) -o $@
 	@ echo ' '
  
-./objects/main.o: ./source/main.c $(H_SOURCE)
+./objects/main.o: ./src/main.c $(HEADERS)
 	@ echo 'Building target using GCC compiler: $<'
 	$(CC) $< $(CC_FLAGS) -o $@
 	@ echo ' '
@@ -48,7 +48,7 @@ objFolder:
 	@ mkdir -p objects
  
 clean:
-	@ $(RM) ./objects/*.o $(PROJ_NAME) *~
-	@ rmdir objects
+	@ $(RM) ./objects/*.o $(PROJECT_NAME) *~
+	@ $(RM) objects
  
 .PHONY: all clean
