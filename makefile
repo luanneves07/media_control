@@ -1,16 +1,14 @@
-# REV_002
-
 #Name
 PROJECT_NAME=media
 
 # All source files
-SOURCE=$(wildcard *.c)
+SOURCE=$(wildcard ./source/*.c)
 
 # all header files
-HEADERS=$(wildcard *.h)
+HEADERS=$(wildcard ./source/*.h)
 
 # All Object files
-OBJECTS=$(SOURCE:.c=.o)
+OBJ=$(subst .c,.o,$(subst source,objects,$(C_SOURCE)))
 
 # Compiler
 CC=gcc
@@ -22,20 +20,35 @@ CC_FLAGS=	-c \
 					-ansi \
 					-pedantic
 
+# Clean command
+RM = rm -rf
+
 #
 #	Compilation
 #
-all: $(PROJECT_NAME)
+all: objFolder $(PROJ_NAME)
 
 $(PROJECT_NAME): $(OBJECTS)
+	@ echo 'Building binary using $(CC) linker: $@'
 	$(CC) -o $@ $^
+	@ echo 'Finished building binary: $@'
+	@ echo ' '
 
-%.o: %.c %.h
+./objects/%.o: ./source/%.c ./source/%.h
+	@ echo 'Building target using $(CC) compiler: $<'
+	$(CC) $< $(CC_FLAGS) -o $@
+	@ echo ' '
  
- $(CC) -o $@ $< $(CC_FLAGS)
- 
-main.o: main.c $(HEADERS)
- $(CC) -o $@ $< $(CC_FLAGS)
+./objects/main.o: ./source/main.c $(H_SOURCE)
+	@ echo 'Building target using GCC compiler: $<'
+	$(CC) $< $(CC_FLAGS) -o $@
+	@ echo ' '
+
+objFolder:
+	@ mkdir -p objects
  
 clean:
- rm -rf *.o $(PROJECT_NAME) *~
+	@ $(RM) ./objects/*.o $(PROJ_NAME) *~
+	@ rmdir objects
+ 
+.PHONY: all clean
