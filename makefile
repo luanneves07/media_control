@@ -14,7 +14,8 @@ OBJECTS=$(subst .c,.o,$(subst source,objects,$(SOURCE)))
 CC=gcc
 
 # Compiler flags
-CC_FLAGS=-c \
+CC_FLAGS=$(shell `pkg-config --cflags --libs glib-2.0`) \
+ -c \
  -W \
  -Wall \
  -ansi \
@@ -29,6 +30,7 @@ RM = rm -rf
 all: objFolder $(PROJECT_NAME)
 
 $(PROJECT_NAME): $(OBJECTS)
+	@ echo $(CC_FLAGS)
 	@ echo 'Building binary using $(CC) linker: $@'
 	$(CC) -o $@ $^
 	@ echo 'Finished building binary: $@'
@@ -36,7 +38,7 @@ $(PROJECT_NAME): $(OBJECTS)
 
 ./objects/%.o: ./src/%.c ./src/%.h
 	@ echo 'Building target using $(CC) compiler: $<'
-	$(CC) $< $(CC_FLAGS) -o $@
+	$(CC) $< $(CC_FLAGS) -o $@ 
 	@ echo ' '
  
 ./objects/main.o: ./src/main.c $(HEADERS)
